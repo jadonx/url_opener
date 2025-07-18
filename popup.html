@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="mainContainer">
+    <div id="presetBar">
+        <!-- Presets dynamically inserted here -->
+        <ul id="contextMenu" class="hidden">
+            <li id="renamePreset">Rename</li>
+            <li id="deletePreset">Delete</li>
+        </ul>
+        <div id="addPresetBtn">+</div>
+    </div>
+    <textarea id="urlInput" placeholder="Enter one URL per line..."></textarea>
+    <button id="openUrls">Open URLs</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
