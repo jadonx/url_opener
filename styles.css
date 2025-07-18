@@ -76,3 +76,12 @@ button {
     margin: 5px 0px;
     padding: 10px;
 }
+
+.preset-tab.dragging {
+  opacity: 0.5;
+}
+
+.preset-tab.drag-over {
+  border: 2px dashed #ccc;
+  background-color: #f0f0f0;
+}

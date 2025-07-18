@@ -40,6 +40,7 @@ function renderPresetTabs() {
     const tab = document.createElement("div");
     tab.className = "preset-tab";
     tab.textContent = name;
+    tab.draggable = true;
     if (name === currentPreset) tab.classList.add("active");
 
     tab.onclick = () => {
@@ -54,6 +55,43 @@ function renderPresetTabs() {
             rightClickedPreset = name;
             showContextMenu(e.pageX, e.pageY);
         }
+    });
+
+    tab.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", name);
+      tab.classList.add("dragging");
+    });
+    
+    tab.addEventListener("dragover", (e) => {
+      e.preventDefault(); // Required!
+      tab.classList.add("drag-over");
+    });
+
+    tab.addEventListener("dragleave", () => {
+      tab.classList.remove("drag-over");
+    });
+
+    tab.addEventListener("drop", (e) => {
+      e.preventDefault();
+      tab.classList.remove("drag-over");
+
+      const draggedName = e.dataTransfer.getData("text/plain");
+      const targetName = name;
+
+      if (draggedName !== targetName) {
+        const fromIndex = order.indexOf(draggedName);
+        const toIndex = order.indexOf(targetName);
+
+        order.splice(fromIndex, 1);         // Remove dragged item from old position
+        order.splice(toIndex, 0, draggedName); // Insert at new position
+
+        savePresets();
+        renderPresetTabs();
+      }
+    });
+
+    tab.addEventListener("dragend", () => {
+      tab.classList.remove("dragging");
     });
 
     presetBar.insertBefore(tab, addPresetBtn);
@@ -80,12 +118,12 @@ addPresetBtn.onclick = () => {
 
 // Open URLs
 document.getElementById("openUrls").addEventListener("click", () => {
-  const urls = urlInput.value.split("\n").map(url => url.trim()).filter(Boolean);
-  
-  urls.forEach(url => {
-    const validUrl = /^https?:\/\//.test(url) ? url : "https://" + url;
-    chrome.tabs.create({ url: validUrl });
-  });
+  const urls = urlInput.value
+    .split("\n")
+    .map(url => url.trim())
+    .filter(Boolean);
+
+  chrome.runtime.sendMessage({ action: "openURLs", urls });
 });
 
 // Save presets dynamically
