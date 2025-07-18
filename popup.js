@@ -2,10 +2,10 @@ const presetBar = document.getElementById("presetBar");
 const urlInput = document.getElementById("urlInput");
 const addPresetBtn = document.getElementById("addPresetBtn");
 
-let currentPreset = "Default";
+let currentPreset = "df";
 let order = [];
 let presets = {};
-const DEFAULT_PRESET = "Default";
+const DEFAULT_PRESET = "df";
 
 // Load presets and render
 chrome.storage.local.get(["presets", "presetOrder"], data => {
