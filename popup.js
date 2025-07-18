@@ -36,7 +36,7 @@ function renderPresetTabs() {
 
   presetBar.insertBefore(defaultTab, addPresetBtn);
 
-  Object.keys(presets).forEach(name => {
+  order.forEach(name => {
     const tab = document.createElement("div");
     tab.className = "preset-tab";
     tab.textContent = name;
@@ -62,7 +62,7 @@ function renderPresetTabs() {
 
 // Save presets to storage
 function savePresets() {
-  chrome.storage.local.set({ presets });
+  chrome.storage.local.set({ presets, presetOrder: order });
 }
 
 // Add new preset
@@ -71,6 +71,7 @@ addPresetBtn.onclick = () => {
   if (!name || presets[name] || name === DEFAULT_PRESET) return;
 
   presets[name] = [];
+  order.push(name);
   currentPreset = name;
   urlInput.value = "";
   savePresets();
@@ -126,6 +127,8 @@ renameOption.addEventListener("click", () => {
       presets[newName] = presets[rightClickedPreset];
       delete presets[rightClickedPreset];
       if (currentPreset === rightClickedPreset) currentPreset = newName;
+      const index = order.indexOf(rightClickedPreset);
+      if (index !== -1) order[index] = newName;
       savePresets();
       renderPresetTabs();
     }
@@ -140,6 +143,7 @@ deleteOption.addEventListener("click", () => {
       currentPreset = DEFAULT_PRESET;
       urlInput.value = "";
     }
+    order = order.filter(name => name !== rightClickedPreset);
     savePresets();
     renderPresetTabs();
   }
